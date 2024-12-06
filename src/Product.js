@@ -1,4 +1,4 @@
-import InputView from "./inputView.js";
+import InputView from "./InputView.js";
 
 class Product {
   #name;

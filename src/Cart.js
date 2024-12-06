@@ -1,5 +1,5 @@
 import { MissionUtils } from "@woowacourse/mission-utils";
-import InputView from "./inputView.js";
+import InputView from "./InputView.js";
 import Product from "./Product.js";
 import Promotion from "./Promotion.js";
 
