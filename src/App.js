@@ -5,9 +5,9 @@ import Cart from './Cart.js';
 
 class App {
   async run() {
-    Product.initialize();
     Promotion.initialize();
-    OutputView.printStock(Product.list);
+    Product.initialize();
+    OutputView.printStock();
 
     await Cart.shopping();
     Cart.adjustQuantity();
