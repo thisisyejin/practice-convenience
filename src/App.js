@@ -10,7 +10,7 @@ class App {
     OutputView.printStock(Product.list);
 
     await Cart.shopping();
-    Cart.adjust();
+    Cart.adjustQuantity();
   }
 }
 

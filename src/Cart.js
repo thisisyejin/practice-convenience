@@ -20,8 +20,9 @@ class Cart {
     }
   }
 
-  static async adjust() {
+  static async adjustQuantity() {
     this.updatedList = [];
+
     for (let item of this.list) {
       // 프로모션 적용
       if (Promotion.isApplicable(item.name)) {
@@ -32,15 +33,14 @@ class Cart {
 
       // 프로모션 미적용
       const { regularStock } = Product.getQuantity(item.name);
-
       if (regularStock >= item.need)
         this.updatedList.push({ name: item.name, promoNeed: 0, regularNeed: item.need });
       else if (regularStock < item.need)
         this.updatedList.push({ name: item.name, promoNeed: item.need - regularStock, regularNeed: regularStock });
     }
+
     console.log(this.updatedList)
   }
 }
-
 
 export default Cart;
