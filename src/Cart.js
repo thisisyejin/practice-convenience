@@ -5,6 +5,7 @@ import Promotion from "./Promotion.js";
 
 class Cart {
   static list;
+  static updatedList;
 
   static async shopping() {
     try {
@@ -20,29 +21,26 @@ class Cart {
   }
 
   static async adjust() {
+    this.updatedList = [];
     for (let item of this.list) {
       // 프로모션 적용
       if (Promotion.isApplicable(item.name)) {
         const result = await Promotion.apply(item);
-        // item = { name: item.name };
-        console.log(result);
+        this.updatedList.push({ name: item.name, promoNeed: result.promoNeed, regularNeed: result.regularNeed });
         continue;
       }
+
       // 프로모션 미적용
-      // 필요 정보: 구매 수량, 재고
       const { regularStock } = Product.getQuantity(item.name);
 
-      // 일반 재고 충분
-      if (regularStock >= item.need) {
-        const result = { promoNeed: 0, regularNeed: item.need }; // 일반 상품만 구매
-        console.log(result);
-        continue;
-      }
-      // 일반 재고 불충분
-      const result = { promoNeed: item.need - regularStock, regularNeed: regularStock };
-      console.log(result);
+      if (regularStock >= item.need)
+        this.updatedList.push({ name: item.name, promoNeed: 0, regularNeed: item.need });
+      else if (regularStock < item.need)
+        this.updatedList.push({ name: item.name, promoNeed: item.need - regularStock, regularNeed: regularStock });
     }
+    console.log(this.updatedList)
   }
 }
+
 
 export default Cart;
