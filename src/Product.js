@@ -1,10 +1,10 @@
 import InputView from "./inputView.js";
 
 class Product {
-  name;
-  price;
-  quantity;
-  promotion;
+  #name;
+  #price;
+  #quantity;
+  #promotion;
   static #list;
 
   constructor({ name, price, quantity, promotion }) {
@@ -26,26 +26,30 @@ class Product {
     return this.#list;
   }
 
-  static search(name) {
+  static #search(name) {
     return this.#list.filter(product => product.name == name);
   }
 
   static searchPromotion(name) {
-    const search = this.search(name).find(product =>
+    const search = this.#search(name).find(product =>
       // 프로모션이 존재하고, 프로모션 재고가 1 이상인 상품 검색
       (product.promotion !== 'null') && (product.quantity > 0));
     if (search !== undefined) return search.promotion;
   }
 
   static isAvailable({ name, need }) {
-    const products = this.search(name);
+    // 존재하는 상품인지
+    const products = this.#search(name);
     if (products.length === 0) throw Error('[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.');
-
-    const quantity = products.map(product => product.quantity);
-    const entireQuantity = quantity.reduce((acc, quantity) => acc + quantity);
+    // 재고 수량이 충분한지
+    const entireQuantity = products.reduce((acc, product) => acc + product.quantity, 0);
     if (entireQuantity < need) throw Error('[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.');
+  }
 
-    return quantity;
+  static getQuantity(name) {
+    const quantity = this.#search(name).map(product => product.quantity);
+    if (quantity.length === 2) return { promoStock: quantity[0], regularStock: quantity[1] };
+    if (quantity.length === 1) return { promoStock: 0, regularStock: quantity[0] };
   }
 }
 

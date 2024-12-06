@@ -33,7 +33,7 @@ const InputView = {
     const shoppingList = input.split(',')
       .map(product => {
         if (!regex.test(product)) throw Error('[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.');
-        return { name: product.match(regex)[1], need: Number(product.match(regex)[2]) }
+        return { name: product.match(regex)[1], need: Number(product.match(regex)[2]), }
       });
     // // 수량이 0일 때 예외 처리
     // shoppingList.forEach(product => {
@@ -48,7 +48,20 @@ const InputView = {
     // });
     // return result;
     return shoppingList;
-  }
+  },
+
+  async askYesOrNo(askMessage) {
+    try {
+      const input = await MissionUtils.Console.readLineAsync(askMessage);
+      if (input === 'y' || input === 'Y') return true;
+      else if (input === 'n' || input === 'N') return false;
+      throw Error('[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.');
+
+    } catch (err) {
+      MissionUtils.Console.print(err.message);
+      return await this.askYesOrNo(askMessage);
+    }
+  },
 }
 
 export default InputView;
